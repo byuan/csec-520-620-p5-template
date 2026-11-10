@@ -1,0 +1,20 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Lint (byte-compile)
+        run: python -m py_compile src/*.py tests/*.py
+      - name: Unit tests
+        run: python -m pytest -q
+      # The full run needs the UNSW-NB15 CSVs, which are not in the repo.
+      # This dry run on synthetic data passes once all four TODOs are done.
+      - name: Synthetic dry run
+        run: python -m src.p5 --config config.yaml --synthetic

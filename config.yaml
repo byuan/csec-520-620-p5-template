@@ -1,0 +1,29 @@
+# Project 5 (bonus): SVMs for intrusion detection on UNSW-NB15.
+# Edit this file, not the code, to change a run.
+project: p5               # grading/grade.py runs the P5 checks (grading/P5_METRICS.md)
+seed: 42
+
+data:
+  source: unsw            # "unsw" = the real data | "synthetic" = small UNSW-shaped fake data for a dry run
+  train_csv: data/UNSW_NB15_training-set.csv
+  test_csv: data/UNSW_NB15_testing-set.csv
+  subsample_rows: 20000   # stratified sample of the training set for the RBF and one-class SVMs
+  min_category_count: 50  # proto/service/state values rarer than this in training become "other"
+
+linear:                   # Task 1
+  C: [0.01, 0.1, 1, 10, 100]
+  max_iter: 5000
+
+rbf:                      # Task 2
+  C: [0.1, 1, 10, 100]
+  gamma: [0.001, 0.01, 0.1, 1]
+  cv_folds: 5
+
+one_class:                # Task 3
+  nu: [0.01, 0.05, 0.1]
+  chosen_nu: 0.05         # the run you report as "the" one-class model; set it after you see the results
+
+n_jobs: -1                # CPU cores for the grid search (-1 = all)
+
+output:
+  dir: results
