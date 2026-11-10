@@ -4,8 +4,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - name: Install dependencies
@@ -14,7 +14,16 @@ jobs:
         run: python -m py_compile src/*.py tests/*.py
       - name: Unit tests
         run: python -m pytest -q
-      # The full run needs the UNSW-NB15 CSVs, which are not in the repo.
-      # This dry run on synthetic data passes once all four TODOs are done.
+      # The full run needs the UNSW-NB15 CSVs, which are not in the repo, so CI does a
+      # dry run on synthetic data. Exit code 2 means "ran cleanly, TODOs remain": that
+      # passes with a warning. Any other failure (a crash in your code) fails CI.
       - name: Synthetic dry run
-        run: python -m src.p5 --config config.yaml --synthetic
+        run: |
+          set +e
+          python -m src.p5 --config config.yaml --synthetic
+          rc=$?
+          if [ "$rc" -eq 2 ]; then
+            echo "::warning title=P5 not finished::Some TODO functions in src/svm_tasks.py are not written yet."
+            exit 0
+          fi
+          exit "$rc"

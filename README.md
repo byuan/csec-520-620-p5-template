@@ -54,7 +54,9 @@ make check          # P5 grading checks on the results you have, without rerunni
 ```
 
 `make reproduce` writes results for every task you have finished and lists the ones still
-to do; it only succeeds once all four are written. `make smoke` results are marked
+to do; it only succeeds once all four are written. On GitHub, CI runs the tests and a
+synthetic dry run on every push: unfinished TODOs show as a warning, and a crash in your
+code fails the run. `make smoke` results are marked
 `"source": "synthetic"` and are not accepted for grading, so finish with `make reproduce`.
 
 ## 5. Submit

@@ -52,7 +52,7 @@ def test_stratified_subsample_keeps_ratio_and_is_seeded():
 
 
 def test_runner_reports_unfinished_tasks(tmp_path, monkeypatch):
-    """With the TODOs still in place, the runner writes partial results and exits 1."""
+    """With the TODOs still in place, the runner writes partial results and exits 2."""
     from src import svm_tasks
     try:
         svm_tasks.build_preprocessor({"data": {"min_category_count": 50}})
@@ -70,6 +70,6 @@ one_class: {{nu: [0.05], chosen_nu: 0.05}}
 n_jobs: 1
 output: {{dir: {tmp_path / 'results'}}}
 """)
-    assert p5.main(["--config", str(cfg)]) == 1
+    assert p5.main(["--config", str(cfg)]) == p5.EXIT_TODO
     m = json.loads((tmp_path / "results" / "metrics.json").read_text())
     assert m["project"] == "p5" and m["data"]["subsample_rows"] == 500
